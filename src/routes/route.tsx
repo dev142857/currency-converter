@@ -1,9 +1,10 @@
-import React from 'react'
+import { lazy } from 'react'
+
 
 export const PublicRoutes = [
     {
         slug: '/',
-        component: '',
+        component: lazy(() => import('../pages/currencyConverter')),
     }
 ]
 
