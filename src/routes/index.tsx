@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { BrowserRouter, Router, Route, Routes } from 'react-router-dom'
 import { PublicRoutes } from './route'
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AppRoutes = () => {
     return (

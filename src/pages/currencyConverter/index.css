@@ -1,0 +1,10 @@
+.container-whole {
+    width: 100%;
+}
+.header-container {
+    height: 270px;
+    background-color: aqua;
+}
+.header-content {
+    width: auto;
+}
