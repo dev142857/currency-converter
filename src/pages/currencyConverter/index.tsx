@@ -5,6 +5,7 @@ import FromCurrency from './components/FromCurrency';
 import ToCurrency from './components/ToCurrency';
 import Exchange from './components/Exchange';
 import Output from './components/Output';
+import { ClipLoader } from 'react-spinners';
 import currencies from '../../seeds/commonCurrency.json';
 
 
@@ -32,9 +33,13 @@ const CurrencyConverter: React.FC = () => {
   const [exchangeAmount, setExchangeAmount] = useState(0)
   const [exchangeRate, setExchangeRate] = useState(1)
 
-  function roundOffToX(x: number, value: any) {
-    return (x) ? value.toFixed(x) : value;
-  }
+  // function roundOffToX(x: number, value: any) {
+  //   return (x) ? value.toFixed(x) : value;
+  // }
+
+  const [selOutAmount, setSelOutAmount] = useState(1)
+  const [selOutFrom, setSelOutFrom] = useState("s")
+  const [selOutTo, setSelOutTo] = useState("s")
 
   const handleExchange = () => {
     setLoading(true)
@@ -49,6 +54,9 @@ const CurrencyConverter: React.FC = () => {
         if (data.result === 'success') {
           setExchangeRate(data.conversion_rate)
           setExchangeAmount(data.conversion_result)
+          setSelOutAmount(selectAmount)
+          setSelOutFrom(selCurrencyFrom.name)
+          setSelOutTo(selCurrencyTo.name)
           setLoading(false)
         }
       }).catch(err => {
@@ -76,7 +84,18 @@ const CurrencyConverter: React.FC = () => {
         </div>
       </div>
       {/* Main current converter container */}
-      <div className='main-container w-full flex justify-center items-center'>
+      <div className='main-container w-full flex justify-center items-center relative'>
+        {isLoading ?
+          <div className="absolute z-10 d-flex mt-2 flex-column justify-content-center align-items-center" id="loader">
+            <ClipLoader
+              color="#1746A2"
+              loading={isLoading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div> : ''
+        }
         <div className={`currency-container w-4/5 bg-white rounded-lg shadow-lg p-11 ${isLoading ? 'blur-2' : ''}`}>
 
           {/* Start Input Data */}
@@ -90,7 +109,7 @@ const CurrencyConverter: React.FC = () => {
 
           {/* Start OutPut Data */}
           <div className='w-full flex justify-end'>
-            <Output isOut={isOut} selCurrencyFrom={selCurrencyFrom} selCurrencyTo={selCurrencyTo} selectAmount={selectAmount} exchangeAmount={exchangeAmount} exchangeRate={exchangeRate} />
+            <Output isOut={isOut} selOutFrom={selOutFrom} selOutTo={selOutTo} selOutAmount={selOutAmount} exchangeAmount={exchangeAmount} exchangeRate={exchangeRate} />
             <div className='w-1/5 mt-10 flex justify-end items-start'>
               <button className='border-4 border-blue-700 text-base font-bold px-3 py-2 text-blue-700' onClick={handleExchange}>
                 Converter

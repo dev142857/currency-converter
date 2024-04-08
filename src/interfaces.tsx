@@ -23,9 +23,9 @@ export interface toCurrencyProps {
 }
 export interface outputProps {
     isOut: boolean
-    selCurrencyFrom: { value: string, label: string, name: string, symbol: string, index: number }
-    selCurrencyTo: { value: string, label: string, name: string, symbol: string, index: number }
-    selectAmount: number
+    selOutFrom: string
+    selOutTo: string
+    selOutAmount: number
     exchangeRate: number
     exchangeAmount: number
 }
