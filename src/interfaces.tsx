@@ -26,4 +26,6 @@ export interface outputProps {
     selCurrencyFrom: { value: string, label: string, name: string, symbol: string, index: number }
     selCurrencyTo: { value: string, label: string, name: string, symbol: string, index: number }
     selectAmount: number
+    exchangeRate: number
+    exchangeAmount: number
 }

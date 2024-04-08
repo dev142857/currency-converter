@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.css';
 import AmountInput from './components/AmountInput';
 import FromCurrency from './components/FromCurrency';
@@ -11,6 +11,7 @@ import currencies from '../../seeds/commonCurrency.json';
 const CurrencyConverter: React.FC = () => {
   const [selectAmount, setSelectAmount] = useState<number>(1);
   const [currencySymbol, setCurrencySymbol] = useState("$");
+  const URL = `https://v6.exchangerate-api.com/v6/${process.env.REACT_APP_EXCHANGE_API_KEY}/pair`
 
   let currenciesOption: { value: string, label: string, name: string, symbol: string, index: number }[] = [];
   Object.entries(currencies).map(([currency, value], index) => {
@@ -26,7 +27,43 @@ const CurrencyConverter: React.FC = () => {
   const [selCurrencyFrom, setSelCurrencyFrom] = useState(currenciesOption[0])
   const [selCurrencyTo, setSelCurrencyTo] = useState(currenciesOption[0])
 
-  const [isOut, setIsOut] = useState(true)
+  const [isOut, setIsOut] = useState(false)
+  const [isLoading, setLoading] = useState(false)
+  const [exchangeAmount, setExchangeAmount] = useState(0)
+  const [exchangeRate, setExchangeRate] = useState(1)
+
+  function roundOffToX(x: number, value: any) {
+    return (x) ? value.toFixed(x) : value;
+  }
+
+  const handleExchange = () => {
+    setLoading(true)
+    setIsOut(true)
+    const controller = new AbortController();
+    const signal = controller.signal;
+    console.log(signal)
+    fetch(`${URL}/${selCurrencyFrom.value}/${selCurrencyTo.value}/${selectAmount}`, { signal })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        if (data.result === 'success') {
+          setExchangeRate(data.conversion_rate)
+          setExchangeAmount(data.conversion_result)
+          setLoading(false)
+        }
+      }).catch(err => {
+        console.log((err.name === "AbortError") ? "request canceled!" : "yet to be handled.")
+        setIsOut(false)
+        setLoading(false)
+      });
+    return () => {
+      controller.abort();
+    }
+  }
+
+  // useEffect(() => {
+  //   handleExchange()
+  // }, [selCurrencyFrom, selCurrencyTo, selectAmount])
 
   return (
     <div className='container-whole'>
@@ -40,7 +77,7 @@ const CurrencyConverter: React.FC = () => {
       </div>
       {/* Main current converter container */}
       <div className='main-container w-full flex justify-center items-center'>
-        <div className='currency-container w-4/5 bg-white rounded-lg shadow-lg p-11'>
+        <div className={`currency-container w-4/5 bg-white rounded-lg shadow-lg p-11 ${isLoading ? 'blur-2' : ''}`}>
 
           {/* Start Input Data */}
           <div className='w-full flex justify-between'>
@@ -53,9 +90,9 @@ const CurrencyConverter: React.FC = () => {
 
           {/* Start OutPut Data */}
           <div className='w-full flex justify-end'>
-            <Output isOut={isOut} selCurrencyFrom={selCurrencyFrom} selCurrencyTo={selCurrencyTo} selectAmount={selectAmount} />
+            <Output isOut={isOut} selCurrencyFrom={selCurrencyFrom} selCurrencyTo={selCurrencyTo} selectAmount={selectAmount} exchangeAmount={exchangeAmount} exchangeRate={exchangeRate} />
             <div className='w-1/5 mt-10 flex justify-end items-start'>
-              <button className='border-4 border-blue-700 text-base font-bold px-3 py-2 text-blue-700'>
+              <button className='border-4 border-blue-700 text-base font-bold px-3 py-2 text-blue-700' onClick={handleExchange}>
                 Converter
               </button>
             </div>

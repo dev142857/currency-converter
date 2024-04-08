@@ -33,6 +33,11 @@
 .inp-amount-label {
     color: #1746A2;
 }
+
 .exchange-icon {
     color: #1746A2;
+}
+
+.blur-2 {
+    filter: blur(2px);
 }
