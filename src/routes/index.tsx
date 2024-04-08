@@ -10,7 +10,7 @@ const AppRoutes = () => {
                 <Suspense fallback={<div>Loading...</div>}>
                     <Routes>
                         {PublicRoutes.map(({component:Component, slug}, index) => (
-                            <Route path={`${slug}`} element={<Component />} />
+                            <Route path={`${slug}`} key={index} element={<Component />} />
                         ))}
                     </Routes>
                 </Suspense>
