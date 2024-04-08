@@ -33,9 +33,9 @@ const CurrencyConverter: React.FC = () => {
   const [exchangeAmount, setExchangeAmount] = useState(0)
   const [exchangeRate, setExchangeRate] = useState(1)
 
-  // function roundOffToX(x: number, value: any) {
-  //   return (x) ? value.toFixed(x) : value;
-  // }
+  function roundOffToX(x: number, value: any) {
+    return (x) ? value.toFixed(x) : value;
+  }
 
   const [selOutAmount, setSelOutAmount] = useState(1)
   const [selOutFrom, setSelOutFrom] = useState("s")
@@ -52,8 +52,8 @@ const CurrencyConverter: React.FC = () => {
       .then((data) => {
         console.log(data)
         if (data.result === 'success') {
-          setExchangeRate(data.conversion_rate)
-          setExchangeAmount(data.conversion_result)
+          setExchangeRate(roundOffToX(2, data.conversion_rate))
+          setExchangeAmount(roundOffToX(2, data.conversion_result))
           setSelOutAmount(selectAmount)
           setSelOutFrom(selCurrencyFrom.name)
           setSelOutTo(selCurrencyTo.name)
